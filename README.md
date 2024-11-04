@@ -19,18 +19,68 @@ This lab stands to prepare the moderngl development environment. Below the steps
     - https://moderngl.readthedocs.io/
 
 ## How to run your program
+# The file 'environmet.txt' includes a full config of conda for this project
+#### 1\. Install Miniconda
+
+If Miniconda is not already installed on your system:
+
+`wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh`
+
+Follow the on-screen instructions to complete the installation and initialize Conda.
+
+#### 2\. Create a New Conda Environment
+
+Create and activate a new Conda environment with Python 3.10:
+
+`conda create -n myenv python=3.10
+conda activate myenv`
+
+#### 3\. Install Required Packages
+
+1.  **Install `pygame`**:
+
+    `conda install -c conda-forge pygame`
+    or use 
+    `pip install pygame`
+
+2.  **Install `moderngl`** (for OpenGL context handling):
+
+    `pip install moderngl`
+
+3.  **Install `PyGLM`** (for GLM functionality):
+
+    `pip install PyGLM`
+
+4.  **Install `numpy`**:
+
+    `pip install numpy`
+
+5.  **Install `Pillow`** (for image handling):
+
+    `pip install pillow`
+
+6.  **Install `objloader`** (for handling 3D object files):
+
+    `pip install objloader`
+
+#### 4\. Adjust OpenGL Context Version in `pygame`
+
+In your program, ensure the OpenGL context version and profile are set to 3.3 Core Profile. Insert these lines before the `pygame.display.set_mode()` call:
 
 ```
-# Update this section with instructions on how to run your programs. 
-
-# Consider that these instructions will be executed 
-in a completely new linux-based machine (Ubuntu 22.04),
-so, instructions for dependencies installation must be added.
-
-# It's highly recommended to use python virtual envs. 
-You may take a look on:
-https://docs.python.org/3/library/venv.html
+import pygame
+# Set OpenGL context to version 3.3 core profile
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
 ```
+
+This ensures that the OpenGL context supports GLSL version 330 as specified in the shaders.
+
+#### 5\. Running the Program
+
+After setting up your environment and ensuring OpenGL context compatibility, run the included files. 
 
 ## Grading Policy
 

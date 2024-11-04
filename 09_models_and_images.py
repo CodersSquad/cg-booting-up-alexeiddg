@@ -11,6 +11,12 @@ from PIL import Image
 os.environ['SDL_WINDOWS_DPI_AWARENESS'] = 'permonitorv2'
 
 pygame.init()
+
+# Set OpenGL context attributes before creating the display
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+
 pygame.display.set_mode((800, 800), flags=pygame.OPENGL | pygame.DOUBLEBUF, vsync=True)
 
 
@@ -18,13 +24,14 @@ class ImageTexture:
     def __init__(self, path):
         self.ctx = moderngl.get_context()
 
+        '''Changes made here mount the image correctly without warnings'''
         img = Image.open(path).convert('RGBA')
         self.texture = self.ctx.texture(img.size, 4, img.tobytes())
-        self.sampler = self.ctx.sampler(texture=self.texture)
+        self.texture.use(location=0)  # Explicitly bind to texture unit 0
+        self.texture.build_mipmaps()  # Build mipmaps for better texture quality
 
     def use(self):
-        self.sampler.use()
-
+        self.texture.use()  # Use the texture explicitly on rendering
 
 class ModelGeometry:
     def __init__(self, path):
@@ -106,9 +113,10 @@ class Scene:
             ''',
         )
 
-        self.texture = ImageTexture('examples/data/textures/crate.png')
+        self.texture = ImageTexture('examples/data/textures/tecnologico-de-monterrey-blue.png')
+        # self.texture = ImageTexture('examples/data/textures/logo2.png')
 
-        self.car_geometry = ModelGeometry('examples/data/models/lowpoly_toy_car.obj')
+        self.car_geometry = ModelGeometry('examples/data/models/car.obj')
         self.car = Mesh(self.program, self.car_geometry)
 
         self.crate_geometry = ModelGeometry('examples/data/models/crate.obj')
